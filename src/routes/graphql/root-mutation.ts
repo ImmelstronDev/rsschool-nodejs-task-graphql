@@ -1,13 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import {
-  GraphQLBoolean,
-  GraphQLFloat,
-  GraphQLInt,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString,
-} from 'graphql';
-import { postType } from './posts/posts.js';
+import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import { ChangePostInput, CreatePostInput, postType } from './posts/posts.js';
 import { UUIDType } from './types/uuid.js';
 import {
   CreatePost,
@@ -17,9 +10,12 @@ import {
   UpdateProfile,
   UpdateUser,
 } from './mutation-interfases.js';
-import { profileType } from './profiles/profiles.js';
-import { MemberTypeId } from './types/memberTypeId.js';
-import { userType } from './users/users.js';
+import {
+  ChangeProfileInput,
+  CreateProfileInput,
+  profileType,
+} from './profiles/profiles.js';
+import { ChangeUserInput, CreateUserInput, userType } from './users/users.js';
 
 const prisma = new PrismaClient();
 
@@ -29,25 +25,27 @@ export const rootMutation = new GraphQLObjectType({
     createPost: {
       type: postType,
       args: {
-        title: { type: new GraphQLNonNull(GraphQLString) },
-        content: { type: new GraphQLNonNull(GraphQLString) },
-        authorId: { type: new GraphQLNonNull(UUIDType) },
+        // title: { type: new GraphQLNonNull(GraphQLString) },
+        // content: { type: new GraphQLNonNull(GraphQLString) },
+        // authorId: { type: new GraphQLNonNull(UUIDType) },
+        dto: { type: new GraphQLNonNull(CreatePostInput) },
       },
 
       resolve: async (_, args: CreatePost) => {
-        const post = await prisma.post.create({ data: args });
+        const post = await prisma.post.create({ data: args.dto });
         return post;
       },
     },
-    updatePost: {
+    changePost: {
       type: postType,
       args: {
-        title: { type: GraphQLString },
-        content: { type: GraphQLString },
+        // title: { type: GraphQLString },
+        // content: { type: GraphQLString },
+        dto: { type: new GraphQLNonNull(ChangePostInput) },
         id: { type: new GraphQLNonNull(UUIDType) },
       },
-      resolve: async (args: UpdatePost) => {
-        const post = await prisma.post.update({ where: { id: args.id }, data: args });
+      resolve: async (_, { dto, id }: UpdatePost) => {
+        const post = await prisma.post.update({ where: { id }, data: dto });
         return post;
       },
     },
@@ -61,28 +59,32 @@ export const rootMutation = new GraphQLObjectType({
     createProfile: {
       type: profileType,
       args: {
-        isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
-        yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
-        memberTypeId: { type: new GraphQLNonNull(MemberTypeId) },
-        userId: { type: new GraphQLNonNull(UUIDType) },
+        // isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
+        // yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
+        // memberTypeId: { type: new GraphQLNonNull(MemberTypeId) },
+        // userId: { type: new GraphQLNonNull(UUIDType) },
+        dto: {
+          type: new GraphQLNonNull(CreateProfileInput),
+        },
       },
       resolve: async (_, args: CreateProfile) => {
-        const profile = await prisma.profile.create({ data: args });
+        const profile = await prisma.profile.create({ data: args.dto });
         return profile;
       },
     },
-    updateProfile: {
+    changeProfile: {
       type: profileType,
       args: {
         id: { type: new GraphQLNonNull(UUIDType) },
-        isMale: { type: GraphQLBoolean },
-        yearOfBirth: { type: GraphQLInt },
-        memberTypeId: { type: MemberTypeId },
+        // isMale: { type: GraphQLBoolean },
+        // yearOfBirth: { type: GraphQLInt },
+        // memberTypeId: { type: MemberTypeId },
+        dto: { type: new GraphQLNonNull(ChangeProfileInput) },
       },
       resolve: async (_, args: UpdateProfile) => {
         const profile = await prisma.profile.update({
           where: { id: args.id },
-          data: args,
+          data: args.dto,
         });
         return profile;
       },
@@ -97,25 +99,29 @@ export const rootMutation = new GraphQLObjectType({
     createUser: {
       type: userType,
       args: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        balance: { type: new GraphQLNonNull(GraphQLFloat) },
+        // name: { type: new GraphQLNonNull(GraphQLString) },
+        // balance: { type: new GraphQLNonNull(GraphQLFloat) },
+        dto: {
+          type: new GraphQLNonNull(CreateUserInput),
+        },
       },
       resolve: async (_, args: CreateUser) => {
-        const user = prisma.user.create({ data: args });
+        const user = prisma.user.create({ data: args.dto });
         return user;
       },
     },
-    updateUser: {
+    changeUser: {
       type: userType,
       args: {
         id: { type: new GraphQLNonNull(UUIDType) },
-        name: { type: GraphQLString },
-        balance: { type: GraphQLFloat },
+        // name: { type: GraphQLString },
+        // balance: { type: GraphQLFloat },
+        dto: { type: new GraphQLNonNull(ChangeUserInput) },
       },
       resolve: async (_, args: UpdateUser) => {
         const user = await prisma.user.update({
           where: { id: args.id },
-          data: args,
+          data: args.dto,
         });
         return user;
       },
