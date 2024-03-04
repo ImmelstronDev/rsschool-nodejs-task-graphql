@@ -26,9 +26,6 @@ export const rootMutation = new GraphQLObjectType({
     createPost: {
       type: postType,
       args: {
-        // title: { type: new GraphQLNonNull(GraphQLString) },
-        // content: { type: new GraphQLNonNull(GraphQLString) },
-        // authorId: { type: new GraphQLNonNull(UUIDType) },
         dto: { type: new GraphQLNonNull(CreatePostInput) },
       },
 
@@ -40,8 +37,6 @@ export const rootMutation = new GraphQLObjectType({
     changePost: {
       type: postType,
       args: {
-        // title: { type: GraphQLString },
-        // content: { type: GraphQLString },
         dto: { type: new GraphQLNonNull(ChangePostInput) },
         id: { type: new GraphQLNonNull(UUIDType) },
       },
@@ -60,10 +55,6 @@ export const rootMutation = new GraphQLObjectType({
     createProfile: {
       type: profileType,
       args: {
-        // isMale: { type: new GraphQLNonNull(GraphQLBoolean) },
-        // yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
-        // memberTypeId: { type: new GraphQLNonNull(MemberTypeId) },
-        // userId: { type: new GraphQLNonNull(UUIDType) },
         dto: {
           type: new GraphQLNonNull(CreateProfileInput),
         },
@@ -77,9 +68,6 @@ export const rootMutation = new GraphQLObjectType({
       type: profileType,
       args: {
         id: { type: new GraphQLNonNull(UUIDType) },
-        // isMale: { type: GraphQLBoolean },
-        // yearOfBirth: { type: GraphQLInt },
-        // memberTypeId: { type: MemberTypeId },
         dto: { type: new GraphQLNonNull(ChangeProfileInput) },
       },
       resolve: async (_, args: UpdateProfile) => {
@@ -100,8 +88,6 @@ export const rootMutation = new GraphQLObjectType({
     createUser: {
       type: userType,
       args: {
-        // name: { type: new GraphQLNonNull(GraphQLString) },
-        // balance: { type: new GraphQLNonNull(GraphQLFloat) },
         dto: {
           type: new GraphQLNonNull(CreateUserInput),
         },
@@ -115,8 +101,6 @@ export const rootMutation = new GraphQLObjectType({
       type: userType,
       args: {
         id: { type: new GraphQLNonNull(UUIDType) },
-        // name: { type: GraphQLString },
-        // balance: { type: GraphQLFloat },
         dto: { type: new GraphQLNonNull(ChangeUserInput) },
       },
       resolve: async (_, args: UpdateUser) => {
