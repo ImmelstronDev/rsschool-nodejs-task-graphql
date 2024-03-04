@@ -32,14 +32,14 @@ export const rootQuery = new GraphQLObjectType({
         return post;
       },
     },
-    members: {
+    memberTypes: {
       type: membersType,
       resolve: async () => {
         const members = await prisma.memberType.findMany();
         return members;
       },
     },
-    member: {
+    memberType: {
       type: memberType,
       args: { id: { type: new GraphQLNonNull(MemberTypeId) } },
       resolve: async (_, args: { id: string }) => {
