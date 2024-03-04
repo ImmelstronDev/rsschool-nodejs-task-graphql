@@ -9,6 +9,7 @@ import {
   UpdatePost,
   UpdateProfile,
   UpdateUser,
+  userSubscribedTo,
 } from './mutation-interfases.js';
 import {
   ChangeProfileInput,
@@ -131,6 +132,37 @@ export const rootMutation = new GraphQLObjectType({
       args: { id: { type: new GraphQLNonNull(UUIDType) } },
       resolve: async (_, args: { id: string }) => {
         await prisma.user.delete({ where: { id: args.id } });
+      },
+    },
+    subscribeTo: {
+      type: userType,
+      args: {
+        userId: { type: new GraphQLNonNull(UUIDType) },
+        authorId: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_, args: userSubscribedTo) => {
+        const subscribeTo = await prisma.user.update({
+          where: { id: args.userId },
+          data: { userSubscribedTo: { create: { authorId: args.authorId } } },
+        });
+        return subscribeTo;
+      },
+    },
+    unsubscribeFrom: {
+      type: GraphQLBoolean,
+      args: {
+        userId: { type: new GraphQLNonNull(UUIDType) },
+        authorId: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_, args: userSubscribedTo) => {
+        await prisma.subscribersOnAuthors.delete({
+          where: {
+            subscriberId_authorId: {
+              subscriberId: args.userId,
+              authorId: args.authorId,
+            },
+          },
+        });
       },
     },
   }),
